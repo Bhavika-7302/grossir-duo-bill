@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useLanguage } from '@/contexts/LanguageContext';
 import SalesScreen from './SalesScreen';
 import InventoryScreen from './InventoryScreen';
 import ReportsScreen from './ReportsScreen';
@@ -22,6 +23,7 @@ interface Bill {
 }
 
 const AdminDashboard = () => {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [selectedBill, setSelectedBill] = useState<Bill | null>(null);
 
@@ -62,10 +64,10 @@ const AdminDashboard = () => {
   ]);
 
   const tabs = [
-    { id: 'dashboard', name: 'Dashboard', icon: '📊' },
-    { id: 'sales', name: 'Sales', icon: '💰' },
-    { id: 'inventory', name: 'Inventory', icon: '📦' },
-    { id: 'reports', name: 'Reports', icon: '📈' }
+    { id: 'dashboard', name: t('డ్యాష్‌బోర్డ్', 'Dashboard'), icon: '📊' },
+    { id: 'sales', name: t('అమ్మకాలు', 'Sales'), icon: '💰' },
+    { id: 'inventory', name: t('ఇన్వెంటరీ', 'Inventory'), icon: '📦' },
+    { id: 'reports', name: t('రిపోర్ట్‌లు', 'Reports'), icon: '📈' }
   ];
 
   const renderTabContent = () => {
@@ -84,25 +86,25 @@ const AdminDashboard = () => {
               <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
                 <CardContent className="p-6">
                   <div className="text-2xl font-bold">{bills.length}</div>
-                  <div className="text-blue-100">Total Bills</div>
+                  <div className="text-blue-100">{t('మొత్తం బిల్లులు', 'Total Bills')}</div>
                 </CardContent>
               </Card>
               <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white">
                 <CardContent className="p-6">
-                  <div className="text-2xl font-bold">${bills.reduce((sum, bill) => sum + bill.total, 0).toFixed(2)}</div>
-                  <div className="text-green-100">Total Sales</div>
+                  <div className="text-2xl font-bold">₹{bills.reduce((sum, bill) => sum + bill.total, 0).toFixed(2)}</div>
+                  <div className="text-green-100">{t('మొత్తం అమ్మకాలు', 'Total Sales')}</div>
                 </CardContent>
               </Card>
               <Card className="bg-gradient-to-r from-purple-500 to-purple-600 text-white">
                 <CardContent className="p-6">
-                  <div className="text-2xl font-bold">${(bills.reduce((sum, bill) => sum + bill.total, 0) / bills.length).toFixed(2)}</div>
-                  <div className="text-purple-100">Average Bill</div>
+                  <div className="text-2xl font-bold">₹{(bills.reduce((sum, bill) => sum + bill.total, 0) / bills.length).toFixed(2)}</div>
+                  <div className="text-purple-100">{t('సగటు బిల్', 'Average Bill')}</div>
                 </CardContent>
               </Card>
               <Card className="bg-gradient-to-r from-orange-500 to-orange-600 text-white">
                 <CardContent className="p-6">
                   <div className="text-2xl font-bold">42</div>
-                  <div className="text-orange-100">Items in Stock</div>
+                  <div className="text-orange-100">{t('స్టాక్‌లో వస్తువులు', 'Items in Stock')}</div>
                 </CardContent>
               </Card>
             </div>
@@ -111,7 +113,7 @@ const AdminDashboard = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  📋 Recent Bills
+                  📋 {t('ఇటీవలి బిల్లులు', 'Recent Bills')}
                   <Badge variant="secondary">{bills.length}</Badge>
                 </CardTitle>
               </CardHeader>
@@ -120,10 +122,10 @@ const AdminDashboard = () => {
                   <table className="w-full border-collapse">
                     <thead>
                       <tr className="border-b-2 border-gray-200">
-                        <th className="text-left p-3 font-semibold text-gray-700">Bill No</th>
-                        <th className="text-left p-3 font-semibold text-gray-700">Timestamp</th>
-                        <th className="text-right p-3 font-semibold text-gray-700">Total Amount</th>
-                        <th className="text-center p-3 font-semibold text-gray-700">Action</th>
+                        <th className="text-left p-3 font-semibold text-gray-700">{t('బిల్ నం.', 'Bill No')}</th>
+                        <th className="text-left p-3 font-semibold text-gray-700">{t('తేదీ & సమయం', 'Timestamp')}</th>
+                        <th className="text-right p-3 font-semibold text-gray-700">{t('మొత్తం', 'Total Amount')}</th>
+                        <th className="text-center p-3 font-semibold text-gray-700">{t('చర్య', 'Action')}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -131,14 +133,14 @@ const AdminDashboard = () => {
                         <tr key={bill.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                           <td className="p-3 font-medium text-blue-600">{bill.billNo}</td>
                           <td className="p-3 text-gray-600">{bill.timestamp}</td>
-                          <td className="p-3 text-right font-semibold text-green-600">${bill.total.toFixed(2)}</td>
+                          <td className="p-3 text-right font-semibold text-green-600">₹{bill.total.toFixed(2)}</td>
                           <td className="p-3 text-center">
                             <Button
                               onClick={() => setSelectedBill(bill)}
                               size="sm"
                               className="bg-blue-500 hover:bg-blue-600"
                             >
-                              View
+                              {t('చూడండి', 'View')}
                             </Button>
                           </td>
                         </tr>

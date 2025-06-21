@@ -6,7 +6,9 @@ import { Button } from '@/components/ui/button';
 interface Product {
   id: string;
   name: string;
-  price: number;
+  purchasePrice: number;
+  mrp: number;
+  salePrice: number;
   stock: number;
   category: string;
 }
@@ -34,16 +36,16 @@ const PriceMismatchModal = ({ item, expectedPrice, onClose, onContinue }: PriceM
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 space-y-2">
             <div className="flex justify-between">
               <span>System Price:</span>
-              <span className="font-medium">${item.price.toFixed(2)}</span>
+              <span className="font-medium">₹{item.salePrice.toFixed(2)}</span>
             </div>
             <div className="flex justify-between">
               <span>Expected Price:</span>
-              <span className="font-medium text-red-600">${expectedPrice.toFixed(2)}</span>
+              <span className="font-medium text-red-600">₹{expectedPrice.toFixed(2)}</span>
             </div>
             <div className="flex justify-between border-t pt-2">
               <span>Difference:</span>
               <span className="font-medium text-red-600">
-                ${Math.abs(expectedPrice - item.price).toFixed(2)}
+                ₹{Math.abs(expectedPrice - item.salePrice).toFixed(2)}
               </span>
             </div>
           </div>

@@ -1,14 +1,16 @@
-
 import React, { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Search, Barcode, Mic, MicOff } from 'lucide-react';
+import { Search, Barcode, Mic, MicOff, Camera } from 'lucide-react';
+import MobileBarcodeScanner from './MobileBarcodeScanner';
 
 interface Product {
   id: string;
   name: string;
-  price: number;
+  purchasePrice: number;
+  mrp: number;
+  salePrice: number;
   stock: number;
   category: string;
   barcode?: string;
@@ -27,6 +29,7 @@ const SearchBar = ({ products, onProductSelect, onBarcodeSearch }: SearchBarProp
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [recognition, setRecognition] = useState<any>(null);
+  const [showMobileScanner, setShowMobileScanner] = useState(false);
 
   useEffect(() => {
     // Initialize speech recognition
@@ -132,88 +135,113 @@ const SearchBar = ({ products, onProductSelect, onBarcodeSearch }: SearchBarProp
 
   const handleBarcodeInput = (value: string) => {
     setSearchTerm(value);
-    // If it looks like a barcode (numbers), trigger barcode search
     if (/^\d+$/.test(value) && value.length >= 8) {
       onBarcodeSearch(value);
     }
   };
 
-  return (
-    <div className="relative w-full max-w-md">
-      <div className="flex gap-2">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-          <Input
-            placeholder="Search items or scan barcode..."
-            value={searchTerm}
-            onChange={(e) => handleBarcodeInput(e.target.value)}
-            className="pl-10 pr-4"
-          />
-        </div>
-        
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => {
-            // Simulate barcode scanner input
-            const barcode = prompt('Enter barcode:');
-            if (barcode) {
-              handleBarcodeInput(barcode);
-            }
-          }}
-        >
-          <Barcode size={18} />
-        </Button>
+  const handleMobileBarcodeScanned = (barcode: string) => {
+    handleBarcodeInput(barcode);
+    setShowMobileScanner(false);
+  };
 
-        <Button
-          variant={isListening ? "destructive" : "outline"}
-          size="icon"
-          onClick={isListening ? stopVoiceRecognition : startVoiceRecognition}
-          disabled={!recognition}
-        >
-          {isListening ? <MicOff size={18} /> : <Mic size={18} />}
-        </Button>
+  return (
+    <>
+      <div className="relative w-full max-w-md">
+        <div className="flex gap-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+            <Input
+              placeholder="వస్తువులను వెతకండి లేదా బార్‌కోడ్ స్కాన్ చేయండి / Search items or scan barcode..."
+              value={searchTerm}
+              onChange={(e) => handleBarcodeInput(e.target.value)}
+              className="pl-10 pr-4"
+            />
+          </div>
+          
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setShowMobileScanner(true)}
+            title="మొబైల్ కెమెరా స్కాన్ / Mobile Camera Scan"
+          >
+            <Camera size={18} />
+          </Button>
+
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => {
+              const barcode = prompt('బార్‌కోడ్ ఎంటర్ చేయండి / Enter barcode:');
+              if (barcode) {
+                handleBarcodeInput(barcode);
+              }
+            }}
+          >
+            <Barcode size={18} />
+          </Button>
+
+          <Button
+            variant={isListening ? "destructive" : "outline"}
+            size="icon"
+            onClick={isListening ? stopVoiceRecognition : startVoiceRecognition}
+            disabled={!recognition}
+          >
+            {isListening ? <MicOff size={18} /> : <Mic size={18} />}
+          </Button>
+        </div>
+
+        {showSuggestions && suggestions.length > 0 && (
+          <Card className="absolute top-full left-0 right-0 mt-1 z-50 max-h-60 overflow-y-auto">
+            {suggestions.map((product) => (
+              <div
+                key={product.id}
+                className="p-3 hover:bg-gray-50 cursor-pointer border-b last:border-b-0"
+                onClick={() => {
+                  onProductSelect(product);
+                  setSearchTerm('');
+                  setShowSuggestions(false);
+                }}
+              >
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h4 className="font-medium">{product.name}</h4>
+                    <p className="text-sm text-gray-600">
+                      ₹{product.salePrice.toFixed(2)} per {product.unit} • స్టాక్ / Stock: {product.stock}
+                    </p>
+                    {product.mrp > product.salePrice && (
+                      <p className="text-xs text-green-600">
+                        సేవ్ / Save: ₹{(product.mrp - product.salePrice).toFixed(2)}
+                      </p>
+                    )}
+                  </div>
+                  <span className="text-xs bg-gray-100 px-2 py-1 rounded">
+                    {product.category}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </Card>
+        )}
+
+        {isListening && (
+          <div className="absolute top-full left-0 right-0 mt-1 z-50">
+            <Card className="p-3 bg-red-50 border-red-200">
+              <div className="flex items-center gap-2 text-red-600">
+                <Mic size={16} className="animate-pulse" />
+                <span className="text-sm">వింటుంది... / Listening... Say "add [quantity] [unit] [item name]"</span>
+              </div>
+            </Card>
+          </div>
+        )}
       </div>
 
-      {showSuggestions && suggestions.length > 0 && (
-        <Card className="absolute top-full left-0 right-0 mt-1 z-50 max-h-60 overflow-y-auto">
-          {suggestions.map((product) => (
-            <div
-              key={product.id}
-              className="p-3 hover:bg-gray-50 cursor-pointer border-b last:border-b-0"
-              onClick={() => {
-                onProductSelect(product);
-                setSearchTerm('');
-                setShowSuggestions(false);
-              }}
-            >
-              <div className="flex justify-between items-center">
-                <div>
-                  <h4 className="font-medium">{product.name}</h4>
-                  <p className="text-sm text-gray-600">
-                    ${product.price.toFixed(2)} per {product.unit} • Stock: {product.stock}
-                  </p>
-                </div>
-                <span className="text-xs bg-gray-100 px-2 py-1 rounded">
-                  {product.category}
-                </span>
-              </div>
-            </div>
-          ))}
-        </Card>
-      )}
-
-      {isListening && (
-        <div className="absolute top-full left-0 right-0 mt-1 z-50">
-          <Card className="p-3 bg-red-50 border-red-200">
-            <div className="flex items-center gap-2 text-red-600">
-              <Mic size={16} className="animate-pulse" />
-              <span className="text-sm">Listening... Say "add [quantity] [unit] [item name]"</span>
-            </div>
-          </Card>
-        </div>
-      )}
-    </div>
+      <MobileBarcodeScanner
+        isOpen={showMobileScanner}
+        onClose={() => setShowMobileScanner(false)}
+        onBarcodeScanned={handleMobileBarcodeScanned}
+      />
+    </>
   );
 };
 

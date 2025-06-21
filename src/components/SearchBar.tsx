@@ -211,7 +211,7 @@ const SearchBar = ({ products, onProductSelect, onBarcodeSearch }: SearchBarProp
               <span className="text-sm">Listening... Say "add [quantity] [unit] [item name]"</span>
             </div>
           </Card>
-        )}
+        </div>
       )}
     </div>
   );

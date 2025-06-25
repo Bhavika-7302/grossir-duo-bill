@@ -1,0 +1,155 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grossir POS - Admin Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
+        <header class="bg-white shadow-md border-b-2 border-blue-500">
+            <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+                <h1 class="text-3xl font-bold text-blue-600">Grossir POS</h1>
+                <div class="flex items-center gap-4">
+                    <button id="languageToggle" class="btn btn-outline btn-sm flex items-center gap-2">
+                        <span id="languageText">🇺🇸 English</span>
+                    </button>
+                    <span class="text-gray-600">
+                        <span data-telugu="స్వాగతం" data-english="Welcome">Welcome</span>, <span id="userName">Admin User</span>
+                    </span>
+                    <button id="logoutBtn" class="btn btn-outline border-red-500 text-red-500 hover:bg-red-500 hover:text-white" data-telugu="లాగ్ అవుట్" data-english="Logout">Logout</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="container mx-auto p-6">
+            <!-- Navigation Tabs -->
+            <div class="flex flex-wrap gap-2 mb-6 bg-white p-2 rounded-lg shadow-sm">
+                <button class="tab-btn active" data-tab="dashboard">
+                    <span>📊</span>
+                    <span data-telugu="డ్యాష్‌బోర్డ్" data-english="Dashboard">Dashboard</span>
+                </button>
+                <button class="tab-btn" data-tab="sales">
+                    <span>💰</span>
+                    <span data-telugu="అమ్మకాలు" data-english="Sales">Sales</span>
+                </button>
+                <button class="tab-btn" data-tab="inventory">
+                    <span>📦</span>
+                    <span data-telugu="ఇన్వెంటరీ" data-english="Inventory">Inventory</span>
+                </button>
+                <button class="tab-btn" data-tab="reports">
+                    <span>📈</span>
+                    <span data-telugu="రిపోర్ట్‌లు" data-english="Reports">Reports</span>
+                </button>
+            </div>
+
+            <!-- Dashboard Tab -->
+            <div id="dashboardTab" class="tab-content">
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                    <div class="card bg-gradient-to-r from-blue-500 to-blue-600 text-white">
+                        <div class="card-content p-6">
+                            <div class="text-2xl font-bold" id="totalBills">3</div>
+                            <div class="text-blue-100" data-telugu="మొత్తం బిల్లులు" data-english="Total Bills">Total Bills</div>
+                        </div>
+                    </div>
+                    <div class="card bg-gradient-to-r from-green-500 to-green-600 text-white">
+                        <div class="card-content p-6">
+                            <div class="text-2xl font-bold" id="totalSales">₹136.50</div>
+                            <div class="text-green-100" data-telugu="మొత్తం అమ్మకాలు" data-english="Total Sales">Total Sales</div>
+                        </div>
+                    </div>
+                    <div class="card bg-gradient-to-r from-purple-500 to-purple-600 text-white">
+                        <div class="card-content p-6">
+                            <div class="text-2xl font-bold" id="averageBill">₹45.50</div>
+                            <div class="text-purple-100" data-telugu="సగటు బిల్" data-english="Average Bill">Average Bill</div>
+                        </div>
+                    </div>
+                    <div class="card bg-gradient-to-r from-orange-500 to-orange-600 text-white">
+                        <div class="card-content p-6">
+                            <div class="text-2xl font-bold">42</div>
+                            <div class="text-orange-100" data-telugu="స్టాక్‌లో వస్తువులు" data-english="Items in Stock">Items in Stock</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bills Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title flex items-center gap-2">
+                            📋 <span data-telugu="ఇటీవలి బిల్లులు" data-english="Recent Bills">Recent Bills</span>
+                            <span class="badge">3</span>
+                        </h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="overflow-x-auto">
+                            <table class="w-full border-collapse">
+                                <thead>
+                                    <tr class="border-b-2 border-gray-200">
+                                        <th class="text-left p-3 font-semibold text-gray-700" data-telugu="బిల్ నం." data-english="Bill No">Bill No</th>
+                                        <th class="text-left p-3 font-semibold text-gray-700" data-telugu="తేదీ & సమయం" data-english="Timestamp">Timestamp</th>
+                                        <th class="text-right p-3 font-semibold text-gray-700" data-telugu="మొత్తం" data-english="Total Amount">Total Amount</th>
+                                        <th class="text-center p-3 font-semibold text-gray-700" data-telugu="చర్య" data-english="Action">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="billsTableBody">
+                                    <!-- Bills will be populated by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sales Tab -->
+            <div id="salesTab" class="tab-content hidden">
+                <iframe src="sales.html" class="w-full h-screen border-0 rounded-lg"></iframe>
+            </div>
+
+            <!-- Inventory Tab -->
+            <div id="inventoryTab" class="tab-content hidden">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title" data-telugu="ఇన్వెంటరీ నిర్వహణ" data-english="Inventory Management">Inventory Management</h2>
+                    </div>
+                    <div class="card-content">
+                        <p class="text-center text-gray-500" data-telugu="ఇన్వెంటరీ నిర్వహణ ఇక్కడ వస్తుంది" data-english="Inventory management will be implemented here">Inventory management will be implemented here</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports Tab -->
+            <div id="reportsTab" class="tab-content hidden">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title" data-telugu="రిపోర్ట్‌లు" data-english="Reports">Reports</h2>
+                    </div>
+                    <div class="card-content">
+                        <p class="text-center text-gray-500" data-telugu="రిపోర్ట్‌లు ఇక్కడ వస్తాయి" data-english="Reports will be implemented here">Reports will be implemented here</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bill View Modal -->
+    <div id="billViewModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 data-telugu="బిల్ వివరాలు" data-english="Bill Details">Bill Details</h3>
+                <button id="closeBillViewModal" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="billViewContent">
+                    <!-- Bill details will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="common.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
